@@ -35,4 +35,4 @@ function queryForOneResult(queryString, callback){
   });
 }
 
-module.exports = { query: query };
+module.exports = { queryForOneResult: queryForOneResult };
