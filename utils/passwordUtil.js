@@ -8,8 +8,8 @@ const passwordHasher = require('password-hasher');
 // Returns an object:
 // {
 //   alorithm: "ssha512",
-//   salt: "generatedSalt",
-//   hash: "generatedHash"
+//   salt: "generatedSaltBuffer",
+//   hash: "generatedHashBuffer"
 // }
 function getSaltAndHashedPassword(password) {
     return passwordHasher.createHashAndSalt(ALGORITHM, password, SALT_LENGTH);
@@ -17,7 +17,7 @@ function getSaltAndHashedPassword(password) {
 
 // Returns a boolean: true if salt and password match hash value
 function verifyPassword(password, salt, hash) {
-    return passwordHasher.createHash(ALGORITHM, password, salt) === hash;
+    return passwordHasher.createHash(ALGORITHM, password, salt).hash.toString('hex') === hash;
 }
 
 module.exports = {
