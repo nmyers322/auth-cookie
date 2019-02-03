@@ -21,7 +21,9 @@ passport.use(new LocalStrategy(function(username, password, done) {
     db.users.findByUsername(username, (error, user) => {
       if (error) return done(error);
       if (!user) return done(null, false);
-      if (!utils.passwordUtil.verifyPassword(password, user.salt, user.password)) return done(null, false);
+      console.log(`REMOVE THIS! ${password}, ${user.salt}, ${user.password}`);
+      const verifiedPassword = utils.passwordUtil.verifyPassword(password, user.salt, user.password);
+      if (!verifiedPassword) return done(null, false);
       // Everything validated, return the token
       const token = utils.getUid(256);
       db.accessTokens.save(token, user.id, client.client_id, (error) => {
@@ -52,7 +54,7 @@ function verifyClient(clientId, clientSecret, done) {
   db.clients.findByClientId(clientId, (error, client) => {
     if (error) return done(error);
     if (!client) return done(null, false);
-    if (client.clientSecret !== clientSecret) return done(null, false);
+    if (client.client_secret !== clientSecret) return done(null, false);
     return done(null, client);
   });
 }
@@ -74,8 +76,8 @@ passport.use(new BearerStrategy(
     db.accessTokens.find(accessToken, (error, token) => {
       if (error) return done(error);
       if (!token) return done(null, false);
-      if (token.userId) {
-        db.users.findById(token.userId, (error, user) => {
+      if (token.user_id) {
+        db.users.findById(token.user_id, (error, user) => {
           if (error) return done(error);
           if (!user) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
@@ -85,7 +87,7 @@ passport.use(new BearerStrategy(
       } else {
         // The request came from a client only since userId is null,
         // therefore the client is passed back instead of a user.
-        db.clients.findByClientId(token.clientId, (error, client) => {
+        db.clients.findByClientId(token.client_id, (error, client) => {
           if (error) return done(error);
           if (!client) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
