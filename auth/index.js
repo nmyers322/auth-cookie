@@ -21,15 +21,9 @@ passport.use(new LocalStrategy(function(username, password, done) {
     db.users.findByUsername(username, (error, user) => {
       if (error) return done(error);
       if (!user) return done(null, false);
-      console.log(`REMOVE THIS! ${password}, ${user.salt}, ${user.password}`);
       const verifiedPassword = utils.passwordUtil.verifyPassword(password, user.salt, user.password);
       if (!verifiedPassword) return done(null, false);
-      // Everything validated, return the token
-      const token = utils.getUid(256);
-      db.accessTokens.save(token, user.id, "", (error) => {
-        if (error) return done(error);
-        return done(null, token);
-      });
+      return done(null, user);
     });
 }));
 
