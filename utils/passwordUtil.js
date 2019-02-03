@@ -17,7 +17,7 @@ function getSaltAndHashedPassword(password) {
 
 // Returns a boolean: true if salt and password match hash value
 function verifyPassword(password, salt, hash) {
-    return passwordHasher.createHash(ALGORITHM, password, salt).hash.toString('hex') === hash;
+    return passwordHasher.createHash(ALGORITHM, password, new Buffer(salt, 'hex')).hash.toString('hex') === hash;
 }
 
 module.exports = {
