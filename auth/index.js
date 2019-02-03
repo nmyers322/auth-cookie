@@ -26,7 +26,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
       if (!verifiedPassword) return done(null, false);
       // Everything validated, return the token
       const token = utils.getUid(256);
-      db.accessTokens.save(token, user.id, client.client_id, (error) => {
+      db.accessTokens.save(token, user.id, "", (error) => {
         if (error) return done(error);
         return done(null, token);
       });
