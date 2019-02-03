@@ -33,7 +33,7 @@ module.exports.save = (token, userId, clientId, done) => {
   userId = xss(userId);
   clientId = xss(clientId);
   console.log(`Saving access_token ${token}, userId ${userId}, clientId ${clientId}`);
-  mysqlWrapper.queryForOneResult(`INSERT INTO access_tokens (user_id, client_id, access_token) VALUES ('${userId}', '${client_id}', '${token}');`, response => {
+  mysqlWrapper.queryForOneResult(`INSERT INTO access_tokens (user_id, client_id, access_token) VALUES ('${userId}', '${clientId}', '${token}');`, response => {
       console.log("Result: ", response.result);
       if(response.error) {
           done(new Error("Error inserting access token into db"));
