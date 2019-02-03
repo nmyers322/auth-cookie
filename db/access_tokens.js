@@ -5,7 +5,7 @@ const xss = require("xss");
 
 module.exports.find = (key, done) => {
   key = xss(key);
-  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE access_token='${key};`, response => {
+  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE access_token='${key}';`, response => {
     if(response.results === null) {
         done(new Error("token not found"));
     }
@@ -16,7 +16,7 @@ module.exports.find = (key, done) => {
 module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
   userId = xss(userId);
   clientId = xss(clientId);
-  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE user_id='${userId} AND client_id='${clientId};`, response => {
+  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE user_id='${userId}' AND client_id='${clientId}';`, response => {
     if(response.results === null) {
         done(new Error("token not found"));
     }

@@ -5,7 +5,7 @@ const xss = require("xss");
 
 module.exports.findById = (id, done) => {
   id = xss(id);
-  mysqlWrapper.query(`SELECT * FROM users WHERE id='${id};`, response => {
+  mysqlWrapper.query(`SELECT * FROM users WHERE id='${id}';`, response => {
     if(response.results === null) {
         done(new Error("user not found"));
     }
@@ -15,7 +15,7 @@ module.exports.findById = (id, done) => {
 
 module.exports.findByUsername = (username, done) => {
   username = xss(username);
-  mysqlWrapper.query(`SELECT * FROM users WHERE username='${username};`, response => {
+  mysqlWrapper.query(`SELECT * FROM users WHERE username='${username}';`, response => {
     if(response.results === null) {
         done(new Error("user not found"));
     }

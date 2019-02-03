@@ -7,7 +7,7 @@ module.exports.find = (key, done) => {
   // if (codes[key]) return done(null, codes[key]);
   // return done(new Error('Code Not Found'));
   key = xss(key);
-  mysqlWrapper.query(`SELECT * FROM authorization_codes WHERE authorization_code='${key};`, response => {
+  mysqlWrapper.query(`SELECT * FROM authorization_codes WHERE authorization_code='${key}';`, response => {
     if(response.results === null) {
         done(new Error("code not found"));
     }
