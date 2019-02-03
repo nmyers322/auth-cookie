@@ -1,22 +1,16 @@
-Unmaintained
+AuthCookie
 ===
 
-If you would like to maintain this project, please email your GitHub username to gerges@beshay.org to start the transfer process.
+Forked from https://github.com/gerges-beshay/oauth2orize-examples
 
-oauth2orize: oauth2 provider example
-===
-
-This example shows a provider which grants tokens in exchange for codes for
-
-  * The client application
-  * A user of the client application
+Authorization server running at https://authcookie.com
 
 Install
 ===
 
 ```bash
-git clone https://github.com/gerges-beshay/oauth2orize-examples.git
-pushd oauth2orize-examples
+git clone https://github.com/nmyers322/auth-cookie
+cd auth-cookie
 npm install
 ```
 

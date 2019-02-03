@@ -1,7 +1,7 @@
 {
-  "name": "oauth2orize-examples",
-  "version": "0.1.0",
-  "repository": "https://github.com/gerges-beshay/oauth2orize-examples.git",
+  "name": "auth-cookie",
+  "version": "1.0.0",
+  "repository": "https://github.com/nmyers322/auth-cookie",
   "license": "MIT",
   "scripts": {
     "start": "node app.js"
@@ -10,6 +10,7 @@
     "body-parser": "^1.17.1",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.3",
+    "dotenv": "^6.2.0",
     "ejs": "^2.5.6",
     "errorhandler": "^1.5.0",
     "express": "^4.15.2",
