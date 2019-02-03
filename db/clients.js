@@ -9,7 +9,7 @@ module.exports.findById = (id, done) => {
     if(response.results === null) {
         done(new Error("client not found"));
     }
-    done(null, response.results[0]);
+    done(null, JSON.parse(JSON.stringify(response.results[0])));
   });
 };
 
@@ -19,6 +19,6 @@ module.exports.findByClientId = (clientId, done) => {
     if(response.results === null) {
         done(new Error("client not found"));
     }
-    done(null, response.results[0]);
+    done(null, JSON.parse(JSON.stringify(response.results[0])));
   });
 };

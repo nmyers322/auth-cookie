@@ -11,7 +11,7 @@ module.exports.find = (key, done) => {
     if(response.results === null) {
         done(new Error("code not found"));
     }
-    done(null, response.results[0]);
+    done(null, JSON.parse(JSON.stringify(response.results[0])));
   });
 };
 
