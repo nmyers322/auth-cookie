@@ -20,7 +20,7 @@ function initConnection() {
  * @param queryString
  * @param callback - takes a DataResponseObject
  */
-function query(queryString, callback){
+function queryForOneResult(queryString, callback){
   let connection = initConnection();
   connection.connect();
   connection.query(queryString, function(error, results, fields){
@@ -28,10 +28,10 @@ function query(queryString, callback){
     connection.end();
     // error is a boolean
     // results can be undefined, null, or the query results
-    callback({
-      error,
-      results: results === undefined ? null : results === null ? null : results
-    });
+    if (typeof results === "undefined") {
+      callback({ error, result: null });
+    }
+    callback({ error, result: results[0] });
   });
 }
 

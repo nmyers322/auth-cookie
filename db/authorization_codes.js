@@ -7,11 +7,13 @@ module.exports.find = (key, done) => {
   // if (codes[key]) return done(null, codes[key]);
   // return done(new Error('Code Not Found'));
   key = xss(key);
-  mysqlWrapper.query(`SELECT * FROM authorization_codes WHERE authorization_code='${key}';`, response => {
-    if(response.results === null) {
+  console.log(`Querying authorization_codes for key ${key}`);
+  mysqlWrapper.queryForOneResult(`SELECT * FROM authorization_codes WHERE authorization_code='${key}';`, response => {
+    console.log("Result: ", response.result);
+    if(response.result === null) {
         done(new Error("code not found"));
     }
-    done(null, JSON.parse(JSON.stringify(response.results[0])));
+    done(null, response.result);
   });
 };
 
@@ -20,7 +22,9 @@ module.exports.save = (code, clientId, redirectUri, userId, done) => {
   clientId = xss(clientId);
   redirectUri = xss(redirectUri);
   userId = xss(userId);
-  mysqlWrapper.query(`INSERT INTO authorization_codes (client_id, redirect_uri, user_id, authorization_code) VALUES ('${clientId}', '${redirectUri}', '${userId}', '${code}');`, response => {
+  console.log(`Saving authorization_code ${code}, clientId ${clientId}, redirectUri ${redirectUri}, userId ${userId}`);
+  mysqlWrapper.queryForOneResult(`INSERT INTO authorization_codes (client_id, redirect_uri, user_id, authorization_code) VALUES ('${clientId}', '${redirectUri}', '${userId}', '${code}');`, response => {
+      console.log("Result: ", response.result);
       if(response.error) {
           done(new Error("code not inserted"));
       }
