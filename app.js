@@ -9,7 +9,6 @@ const errorHandler = require('errorhandler');
 const session = require('express-session');
 const passport = require('passport');
 const routes = require('./routes');
-const LocalStrategy = require('./passport-local').Strategy;
 const db = require('./db');
 const utils = require('./utils');
 
@@ -23,19 +22,6 @@ app.use(errorHandler());
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(function(username, password, done) {
-    db.users.findByUsername(username, (error, user) => {
-      if (error) return done(error);
-      if (!user) return done(null, false);
-      if (!utils.passwordUtil.verifyPassword(password, user.salt, user.password)) return done(null, false);
-      // Everything validated, return the token
-      const token = utils.getUid(256);
-      db.accessTokens.save(token, user.id, client.client_id, (error) => {
-        if (error) return done(error);
-        return done(null, token);
-      });
-    });
-}));
 
 // Passport configuration
 require('./auth');
