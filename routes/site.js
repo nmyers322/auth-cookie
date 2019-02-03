@@ -2,7 +2,7 @@
 
 const passport = require('passport');
 const login = require('connect-ensure-login');
-const LocalStrategy = require('./passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const db = require('../db');
 const utils = require('../utils');
 
