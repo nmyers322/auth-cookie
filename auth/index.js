@@ -6,6 +6,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const db = require('../db');
+const utils = require('../utils');
 
 /**
  * LocalStrategy
@@ -14,16 +15,21 @@ const db = require('../db');
  * Anytime a request is made to authorize an application, we must ensure that
  * a user is logged in before asking them to approve the request.
  */
-passport.use(new LocalStrategy(
-  (username, password, done) => {
+
+passport.use(new LocalStrategy(function(username, password, done) {
+    console.log("Attempting to log in");
     db.users.findByUsername(username, (error, user) => {
       if (error) return done(error);
       if (!user) return done(null, false);
-      if (user.password !== password) return done(null, false);
-      return done(null, user);
+      if (!utils.passwordUtil.verifyPassword(password, user.salt, user.password)) return done(null, false);
+      // Everything validated, return the token
+      const token = utils.getUid(256);
+      db.accessTokens.save(token, user.id, client.client_id, (error) => {
+        if (error) return done(error);
+        return done(null, token);
+      });
     });
-  }
-));
+}));
 
 passport.serializeUser((user, done) =>  done(null, user.id));
 
