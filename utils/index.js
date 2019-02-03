@@ -1,5 +1,9 @@
 'use strict';
 
+const passwordUtil = require('./passwordUtil');
+
+module.exports.passwordUtil = passwordUtil;
+
 /**
  * Return a unique identifier with the given `len`.
  *

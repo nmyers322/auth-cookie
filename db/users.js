@@ -1,20 +1,24 @@
 'use strict';
 
-const users = [
-  { id: '1', username: 'bob', password: 'secret', name: 'Bob Smith' },
-  { id: '2', username: 'joe', password: 'password', name: 'Joe Davis' },
-];
+const mysqlWrapper = require("./mysqlWrapper");
+const xss = require("xss");
 
 module.exports.findById = (id, done) => {
-  for (let i = 0, len = users.length; i < len; i++) {
-    if (users[i].id === id) return done(null, users[i]);
-  }
-  return done(new Error('User Not Found'));
+  id = xss(id);
+  mysqlWrapper.query(`SELECT * FROM users WHERE id='${id};`, response => {
+    if(response.results === null) {
+        done(new Error("user not found"));
+    }
+    done(null, response.results[0]);
+  });
 };
 
 module.exports.findByUsername = (username, done) => {
-  for (let i = 0, len = users.length; i < len; i++) {
-    if (users[i].username === username) return done(null, users[i]);
-  }
-  return done(new Error('User Not Found'));
+  username = xss(username);
+  mysqlWrapper.query(`SELECT * FROM users WHERE username='${username};`, response => {
+    if(response.results === null) {
+        done(new Error("user not found"));
+    }
+    done(null, response.results[0]);
+  });
 };

@@ -76,11 +76,11 @@ server.grant(oauth2orize.grant.token((client, user, ares, done) => {
 server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
   db.authorizationCodes.find(code, (error, authCode) => {
     if (error) return done(error);
-    if (client.id !== authCode.clientId) return done(null, false);
-    if (redirectUri !== authCode.redirectUri) return done(null, false);
+    if (client.id !== authCode.client_id) return done(null, false);
+    if (redirectUri !== authCode.redirect_uri) return done(null, false);
     
     const token = utils.getUid(256);
-    db.accessTokens.save(token, authCode.userId, authCode.clientId, (error) => {
+    db.accessTokens.save(token, authCode.user_id, authCode.client_id, (error) => {
       if (error) return done(error);
       return done(null, token);
     });
@@ -94,18 +94,18 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
 
 server.exchange(oauth2orize.exchange.password((client, username, password, scope, done) => {
   // Validate the client
-  db.clients.findByClientId(client.clientId, (error, localClient) => {
+  db.clients.findByClientId(client.client_id, (error, localClient) => {
     if (error) return done(error);
     if (!localClient) return done(null, false);
-    if (localClient.clientSecret !== client.clientSecret) return done(null, false);
+    if (localClient.client_secret !== client.client_secret) return done(null, false);
     // Validate the user
     db.users.findByUsername(username, (error, user) => {
       if (error) return done(error);
       if (!user) return done(null, false);
-      if (password !== user.password) return done(null, false);
+      if (!utils.passwordUtil.verifyPassword(password, user.salt, user.password)) return done(null, false);
       // Everything validated, return the token
       const token = utils.getUid(256);
-      db.accessTokens.save(token, user.id, client.clientId, (error) => {
+      db.accessTokens.save(token, user.id, client.client_id, (error) => {
         if (error) return done(error);
         return done(null, token);
       });
@@ -120,14 +120,14 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
 
 server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => {
   // Validate the client
-  db.clients.findByClientId(client.clientId, (error, localClient) => {
+  db.clients.findByClientId(client.client_id, (error, localClient) => {
     if (error) return done(error);
     if (!localClient) return done(null, false);
-    if (localClient.clientSecret !== client.clientSecret) return done(null, false);
+    if (localClient.client_secret !== client.client_secret) return done(null, false);
     // Everything validated, return the token
     const token = utils.getUid(256);
     // Pass in a null for user id since there is no user with this grant type
-    db.accessTokens.save(token, null, client.clientId, (error) => {
+    db.accessTokens.save(token, null, client.client_id, (error) => {
       if (error) return done(error);
       return done(null, token);
     });
@@ -165,9 +165,9 @@ module.exports.authorization = [
     // Check if grant request qualifies for immediate approval
     
     // Auto-approve
-    if (client.isTrusted) return done(null, true);
+    //if (client.is_trusted) return done(null, true);
     
-    db.accessTokens.findByUserIdAndClientId(user.id, client.clientId, (error, token) => {
+    db.accessTokens.findByUserIdAndClientId(user.id, client.client_id, (error, token) => {
       // Auto-approve
       if (token) return done(null, true);
       

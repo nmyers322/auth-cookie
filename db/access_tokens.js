@@ -1,20 +1,37 @@
 'use strict';
 
-const tokens = {};
+const mysqlWrapper = require("./mysqlWrapper");
+const xss = require("xss");
 
 module.exports.find = (key, done) => {
-  if (tokens[key]) return done(null, tokens[key]);
-  return done(new Error('Token Not Found'));
+  key = xss(key);
+  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE access_token='${key};`, response => {
+    if(response.results === null) {
+        done(new Error("token not found"));
+    }
+    done(null, response.results[0]);
+  });
 };
 
 module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
-  for (const token in tokens) {
-    if (tokens[token].userId === userId && tokens[token].clientId === clientId) return done(null, token);
-  }
-  return done(new Error('Token Not Found'));
+  userId = xss(userId);
+  clientId = xss(clientId);
+  mysqlWrapper.query(`SELECT * FROM access_tokens WHERE user_id='${userId} AND client_id='${clientId};`, response => {
+    if(response.results === null) {
+        done(new Error("token not found"));
+    }
+    done(null, response.results[0]);
+  });
 };
 
 module.exports.save = (token, userId, clientId, done) => {
-  tokens[token] = { userId, clientId };
-  done();
+  token = xss(token);
+  userId = xss(userId);
+  clientId = xss(clientId);
+  mysqlWrapper.query(`INSERT INTO access_tokens (user_id, client_id, access_token) VALUES ('${userId}', '${client_id}', '${token}');`, response => {
+      if(response.error) {
+          done(new Error("Error inserting access token into db"));
+      }
+      done();
+  })
 };
